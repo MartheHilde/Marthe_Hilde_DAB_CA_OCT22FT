@@ -1,0 +1,17 @@
+version: '3.5'
+
+volumes:
+  mysql-data:
+
+
+services:
+  mysql:
+    image: docker.io/library/mysql:latest
+    command: --default-authentication-plugin=mysql_native_password
+    ports:
+      - 3306:3306
+    environment:
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - mysql-data:/var/lib/mysql
+    restart: unless-stopped
