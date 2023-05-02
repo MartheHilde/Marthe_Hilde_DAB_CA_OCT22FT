@@ -1,9 +1,8 @@
-//many to one, many animals can have the temperament..
 module.exports = (sequelize, Sequelize) => {
-    const Temperaments = sequelize.define('Temperament', {
-        Temperament: Sequelize.DataTypes.STRING
+    const Temperament = sequelize.define('Temperament', {
+        Temperament: Sequelize.DataTypes.STRING(45)
     },{
         timestamps: false
     });
-    return Temperaments
+    return Temperament
 }
