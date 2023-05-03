@@ -7,7 +7,7 @@ var cookieParser = require('cookie-parser');
 var logger = require('morgan');
 const { Sequelize, Model, DataTypes } = require('sequelize');
 const db = require("./models/index.js");
-db.sequelize.sync({ force: false })
+db.sequelize.sync({ force: true })
 
 var indexRouter = require('./routes/index');
 var animalsRouter = require('./routes/animals');
