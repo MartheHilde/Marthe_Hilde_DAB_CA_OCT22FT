@@ -1,7 +1,7 @@
 # DAB - Course Assignment 1
 # Application Installation and Usage Instructions
-- Run npm install for the installation of required packages. Be vary of version control.
-- Note that nodemon is not required for a functional application, but is reccommended while editing the source code.
+- Run npm install for the installation of required packages listed below. Be vary of version control, as the passport package should not be of version 0.5.0 due to a bug with the logout router.
+- Note that nodemon is not required for a functional application, but is reccommended while editing the source code. To use nodemon, simply run ```npm test``` in the terminal.
 
     - "cookie-parser": "~1.4.4",
     - "debug": "~2.6.9",
@@ -140,20 +140,19 @@ VALUES (
 ```
 
 # DATABASEACCESS
-Save the following user-access SQL script to your README file, under the heading “DATABASEACCESS”.
 
-Using SQL only:
+Using SQL only for creating a new "dabcaowner" login for the database, use this script:
 
-    Create a new “dabcaowner” login for the database, with the password “dabca1234” with the “database owner” rights and permissions
 
 ```
-CREATE LOGIN dabcaowner WITH PASSWORD = 'dabca1234', DEFAULT_DATABASE = YourDatabaseName, CHECK_POLICY = OFF;
+CREATE LOGIN dabcaowner WITH PASSWORD = 'dabca1234', DEFAULT_DATABASE = adoptiondb, CHECK_POLICY = OFF;
 ```
-This statement creates a new login with the username "dabcaowner" and the password "dabca1234". The DEFAULT_DATABASE parameter specifies the default database for the login, and CHECK_POLICY = OFF turns off password policy enforcement.
+This statement creates a new login with the username "dabcaowner" and the password "dabca1234". 
+DEFAULT_DATABASE parameter specifies the default database for the login, and CHECK_POLICY = OFF turns off password policy enforcement.
 
 To grant the "database owner" role to the new login, execute the following SQL statement:
 ```
-USE YourDatabaseName;
+USE adoptiondb;
 EXEC sp_addrolemember 'db_owner', 'dabcaowner';
 ```
 
@@ -167,12 +166,17 @@ EXEC sp_addrolemember 'db_owner', 'dabcaowner';
     LIMIT 1;
    ```
 2. Query 2
-3. Query 3
-4. Query for returning all animals born between 2017-12-31 and 2020-12-31:
+3. Query for returning all animals sorted by age from youngest to oldest:
+   ```
+   SELECT Name, Birthday, TIMESTAMPDIFF(YEAR, Birthday, CURDATE()) AS age_in_years
+    FROM Animals
+    ORDER BY Birthday ASC;
+    ```
+1. Query for returning all animals born between 2017-12-31 and 2020-12-31:
    ```
     SELECT Name, Birthday
     FROM Animals
     WHERE Birthday BETWEEN '2017-12-31' AND '2020-12-31';
     ``` 
-5. Qurey 5
-6. Query 6
+2. Qurey 5
+3. Query 6

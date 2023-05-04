@@ -9,7 +9,8 @@
 </head>
 
 <body>
-  <%- include('./partials/navbar.ejs', {user: user}) %>
+  <% if (user.roles == 'admin') { %>
+    <%- include('./partials/navbar.ejs', {user: user}) %>
     <div class="container-fluid mt-5">
       <h2 class="p-3 text-center">Animals for Adoption - species</h2>
         <div class="list-group">
@@ -44,6 +45,15 @@
             </div>
       </div>
     </div>
+    <% } else { %>
+      <div class="container-fluid mt-5">
+        <h3 class="p-3 text-center">403</h3>
+        <div class="row px-3 py-1 w-100">
+        <p class="text-center">Access denied</p>
+        <p><a class="nav-link text-center" href="/">Click here to return to the frontpage</a></p>
+      </div>
+      </div>
+      <% } %>
 </body>
 
 </html>
