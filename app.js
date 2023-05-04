@@ -33,6 +33,7 @@ var animalsRouter = require('./routes/animals');
 var speciesRouter = require('./routes/species');
 var temperamentRouter = require('./routes/temperament');
 var loginRouter = require('./routes/login.js');
+var logoutRouter = require('./routes/logout.js');
 var signupRouter = require('./routes/signup.js');
 
 
@@ -67,6 +68,7 @@ app.use('/animals', animalsRouter);
 app.use('/species', speciesRouter);
 app.use('/temperament', temperamentRouter);
 app.use('/login', loginRouter);
+app.use('/logout', logoutRouter);
 app.use('/signup', signupRouter);
 
 

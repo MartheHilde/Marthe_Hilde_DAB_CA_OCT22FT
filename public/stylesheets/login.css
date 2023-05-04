@@ -61,6 +61,15 @@ form section {
   margin: 0 0 20px 0;
   position: relative; /* for password toggle positioning */
 }
+
+#logout-form {
+  margin: 100px;
+  border: 1px solid #847777;
+  padding: 50px;
+  box-shadow: 0 6px 20px rgb(0 0 0 / 0.2);
+}
+
+
 #login-form {
   margin: 100px;
   border: 1px solid #847777;

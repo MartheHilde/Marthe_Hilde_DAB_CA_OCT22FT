@@ -13,7 +13,8 @@ function deleteSpecies(id){
 }
 
 function updateTemperament(id){
-    newTemperament = prompt("Update temperament")
+    let name = prompt("Update temperament")
+    
 }
 
 function deleteTemperament(id){

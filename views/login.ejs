@@ -13,39 +13,40 @@
 
 <body>
 	<div>
-	<%- include('./partials/navbar.ejs') %>
-		<% if(user){%>
-			<p>You are currently logged in as the <b>
-					<%=user.username%>
-				</b></p>
-			<form action="/login/logout" method="post">
-				<button class="logout" type="submit">Sign out</button>
+<% if(user){%>
+	<section id="logout-form">
+	<p>You are currently logged in as <b>
+			<%=user.username%>
+		</b></p>
+	<form action="/login/logout" method="post">
+		<button class="logout" type="submit">Sign out</button>
+	</form>
+</section>
+	<%} else { %>
+		<div id="login-form">
+			<form action="/login/password" method="post">
+				<section>
+					<label for="username">Username</label>
+					<input id="username" name="username" type="text" autocomplete="username" required autofocus>
+				</section>
+				<section>
+					<label for="current-password">Password</label>
+					<input id="current-password" name="password" type="password" autocomplete="current-password" required>
+				</section>
+				<button type="submit">Sign in</button>
 			</form>
-			<%} else { %>
-				<div id="login-form">
-					<form action="/login/password" method="post">
-						<section>
-							<label for="username">Username</label>
-							<input id="username" name="username" type="text" autocomplete="username" required autofocus>
-						</section>
-						<section>
-							<label for="current-password">Password</label>
-							<input id="current-password" name="password" type="password" autocomplete="current-password" required>
-						</section>
-						<button type="submit">Sign in</button>
-					</form>
-					
-					<hr>
-					<p class="help">Don't have an account? <a href="/signup">Sign up</a></p>
-				</div>
-				<% } %>
-			</div>
+			
+			<hr>
+			<p class="help">Don't have an account? <a href="/signup">Sign up</a></p>
+		</div>
+		<% } %>
+	</div>
 
-				<footer class="info">
-					<p>Created by <a href="https://www.noroff.no/en/">Noroff</a></p>
-					<p>Part of Back-end Development Program at Noroff</p>
-					<p>Authentication powered by <a href="https://www.passportjs.org">Passport</a></p>
-				</footer>
+	<footer class="info">
+		<p>Created by <a href="https://www.noroff.no/en/">Noroff</a></p>
+		<p>Part of Back-end Development Program at Noroff</p>
+		<p>Authentication powered by <a href="https://www.passportjs.org">Passport</a></p>
+	</footer>
 </body>
 
 </html>
