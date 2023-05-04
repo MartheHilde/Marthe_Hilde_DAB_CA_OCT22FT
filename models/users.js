@@ -4,8 +4,6 @@ module.exports = (sequelize, Sequelize) => {
       username: Sequelize.DataTypes.STRING,
       password: Sequelize.DataTypes.STRING,
       roles: Sequelize.DataTypes.STRING 
-    },{
-      timestamps: false
     });
     return User
 }

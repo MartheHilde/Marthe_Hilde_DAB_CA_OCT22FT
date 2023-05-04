@@ -10,8 +10,11 @@ const connection = {
   database : process.env.DATABASE_NAME,
   username : process.env.ADMIN_USERNAME,
   password : process.env.ADMIN_PASSWORD,
-  host: process.env.HOST
-}
+  host: process.env.HOST,
+  define: {
+    timestamps: false
+  }
+} 
 
 // connect to db
 const sequelize = new Sequelize(connection);
@@ -30,7 +33,6 @@ fs.readdirSync(__dirname)
       console.log(db)
   });
   console.log(db)
-  
 
   Object.keys(db).forEach(modelName => {
     if (db[modelName].associate) {

@@ -4,14 +4,13 @@ module.exports = (sequelize, Sequelize) => {
         Name: Sequelize.DataTypes.STRING,
         Birthday: Sequelize.DataTypes.DATE,
         Adopted: Sequelize.DataTypes.BOOLEAN
-    },{
-        timestamps: false
     });
 
     Animals.associate = function(models) {
         Animals.belongsTo(models.Species),
         Animals.belongsTo(models.Size),
-        Animals.belongsToMany(models.Temperament, {through: 'AnimalsTemperaments'})
+        Animals.belongsToMany(models.Temperament, {through: 'AnimalsTemperaments'}),
+        Animals.hasMany(models.Adoptions)
     }
 
     return Animals

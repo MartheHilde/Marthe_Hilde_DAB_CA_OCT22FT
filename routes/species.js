@@ -1,19 +1,17 @@
 var express = require('express');
 var router = express.Router();
+const { Species } = require('../models');
+
 
 router.get('/', async function (req, res, next) {
-    species = [
-        {
-            Id: 1,
-            Name: "Tedy bear hamster"
-        },
-        {
-            Id: 2,
-            Name: "Jack-Russel"
-        }
-    ]
-    res.render("species", {user: null})
-})
+    try {
+      const species = await Species.findAll();
+      res.render('species', { user: req.user, species: species });
+    } catch (error) {
+      console.log(error);
+      res.status(500).send('Internal server error');
+    }
+  });
 
 router.post('/update', async function (req,res,next){
     res.render("index",{user: null})

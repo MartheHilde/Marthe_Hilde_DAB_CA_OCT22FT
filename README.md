@@ -128,6 +128,17 @@ Using SQL only:
 
     Create a new “dabcaowner” login for the database, with the password “dabca1234” with the “database owner” rights and permissions
 
+```
+CREATE LOGIN dabcaowner WITH PASSWORD = 'dabca1234', DEFAULT_DATABASE = YourDatabaseName, CHECK_POLICY = OFF;
+```
+This statement creates a new login with the username "dabcaowner" and the password "dabca1234". The DEFAULT_DATABASE parameter specifies the default database for the login, and CHECK_POLICY = OFF turns off password policy enforcement.
+
+To grant the "database owner" role to the new login, execute the following SQL statement:
+```
+USE YourDatabaseName;
+EXEC sp_addrolemember 'db_owner', 'dabcaowner';
+```
+
 
 # DATABASEQUERIES
 1. Query 1
