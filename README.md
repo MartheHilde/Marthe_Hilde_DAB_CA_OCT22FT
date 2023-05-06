@@ -19,15 +19,16 @@
     - "sequelize": "^6.28.0"
 
 # Environment Variables
-- Might need to change port to "localhost" - local ip is used for my macbook.
-- sequelize@6.28.0
-- mysql2.18.1
-- mysql2 @3.1.0
-- Nodemon
-
+ADMIN_USERNAME = "YOUR_USERNAME"
+ADMIN_PASSWORD = "YOUR_PASSWORD"
+DATABASE_NAME = "YOUR_DATABASE"
+DIALECT = "mysql"
+DIALECTMODEL = "mysql2"
+PORT = "YOUR_PORT"
+HOST = "YOUR_HOST"
 # Additional Libraries/Packages
 ## Docker
-The Docker Compose file is designed to quickly set up a MySQL database container using the official MySQL Docker Hub image. It includes a named volume for persistent storage of the database files and sets up the root password for the MySQL server.
+The Docker Compose file is designed to quickly set up a MySQL database container using the latest official MySQL Docker Hub image. It includes a named volume for persistent storage of the database files and sets up the root password for the MySQL server.
 It allows you to specify the containers, their dependencies, and the network configuration in a single file, making it easy to manage and deploy complex applications.
 #### Prerequisites
 
@@ -55,29 +56,6 @@ Once the MySQL container is running, you can connect to the MySQL server using y
 To create a new database named "adoptiondb", run the following SQL command in your MySQL client:
 ``` CREATE DATABASE adoptiondb; ```
 
-## BCRYPT
-Lorem ipsum
-
-#### Prerequisites
-* bcrypt installed ```npm install bcrypt```
-
-#### Usage
-* Usage information is retrieved from the npm package manager website, https://www.npmjs.com/package/bcrypt
-async (recommended):
-```
-const bcrypt = require('bcrypt');
-const saltRounds = 10;
-const myPlaintextPassword = 's0/\/\P4$$w0rD';
-const someOtherPlaintextPassword = 'not_bacon';
-```
-Hash password:
-```
-bcrypt.genSalt(saltRounds, function(err, salt) {
-    bcrypt.hash(myPlaintextPassword, salt, function(err, hash) {
-        // Store hash in your password DB.
-    });
-});
-```
 
 # NodeJS Version Used
 For this assignment, version v18.13.0 of NodeJs were used.
