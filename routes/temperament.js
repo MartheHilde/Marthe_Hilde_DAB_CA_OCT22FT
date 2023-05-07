@@ -18,12 +18,12 @@ router.get('/', async function (req, res, next) {
 router.put('/:id', async function (req, res) {
   try {
     const id = req.params.id;
-    const newTemperament = req.body.Temperaments; 
-    const result = await Temperament.update({ Temperament: newTemperament }, {
+    const newTemperament = req.body; 
+    const result = await Temperament.update(newTemperament, {
       where: { id }
     });
     if (result[0] !== 1) {
-      throw new Error('Failed to update temperament');
+      throw new Error('Failed to update temperaments');
     }
     res.sendStatus(200);
   } catch (error) {
@@ -35,15 +35,16 @@ router.put('/:id', async function (req, res) {
 router.post('/add', async function (req, res) {
   console.log("Connecting post request");
   try {
-    const temperament = req.body.Temperaments; //
+    const temperament = req.body.Temperament; // fix property name
     console.log("Getting temperament name");
     await addTemperament(temperament);
-    res.redirect('/temperaments');
+    res.redirect('/temperament');
   } catch (error) {
     console.log(error);
     res.status(500).send('Internal server error');
   }
 });
+
 
 // DELETE a temperament
 router.delete('/:id', async (req, res) => {

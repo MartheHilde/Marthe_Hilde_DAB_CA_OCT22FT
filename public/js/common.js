@@ -106,6 +106,7 @@ async function addTemperament(temperamentName) {
   }
 }
 
+
 /*
   UPDATE TEMPERAMENT
 */

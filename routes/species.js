@@ -13,18 +13,6 @@ router.get('/', async function (req, res, next) {
   }
 });
 
-// router.post('/update', async function (req,res){
-//   try {
-//     const id = req.body.id;
-//     const newName = await newSpeciesName(id);
-//     await updateSpecies(id, newName);
-//     res.redirect('/species');
-//   } catch (error) {
-//     console.log(error);
-//     res.status(500).send('Internal server error');
-//   }
-// });
-
 router.put('/:id', async function (req, res) {
   try {
     const id = req.params.id;
