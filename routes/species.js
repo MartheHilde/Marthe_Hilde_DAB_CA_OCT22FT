@@ -47,7 +47,6 @@ router.post('/add', async function (req, res, next) {
 // DELETE a species
 router.delete('/:id', (req, res) => {
   const speciesId = req.params.id;
-
   Species.destroy({
     where: { id: speciesId }
   })

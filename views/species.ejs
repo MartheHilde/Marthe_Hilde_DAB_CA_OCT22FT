@@ -9,8 +9,8 @@
 </head>
 
 <body>
-  <% if (user.roles == 'admin') { %>
-    <%- include('./partials/navbar.ejs', {user: user}) %>
+  <% if (user && user.roles && user.roles === 'admin') { %>
+    <%- include('./partials/navbar.ejs', {user: user}) %> 
     <div class="container-fluid mt-5">
       <h2 class="p-3 text-center">Animals for Adoption - species</h2>
         <div class="list-group">

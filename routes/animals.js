@@ -1,6 +1,9 @@
 var express = require('express');
 var router = express.Router();
-const { Animals, Species, Size, Temperament } = require('../models');
+const { Animals, Species, Size, Temperament, Adoptions, Users } = require("../models");
+const { adoptAnimal, cancelAdoption } = require('../public/js/common');
+
+
 
 router.get('/', async function (req, res, next) {
   try {
@@ -29,6 +32,29 @@ router.get('/', async function (req, res, next) {
     res.status(500).send('Internal server error');
   }
 });
+
+// ADOPT AN ANIMAL
+router.post("/:id/adopt", async (req, res) => {
+  const role = req.user.roles;
+  if (role !== "member") {
+    return res.json({ success: false, message: "Only members can adopt animals." });
+  }
+
+  const animalId = req.params.id;
+  const adoptionResult = await adoptAnimal(animalId, req);
+  res.json(adoptionResult);
+});
+
+
+
+// CANCEL ADOPTION
+router.post("/:id/cancel", async (req, res) => {
+  const animalId = req.params.id;
+  const deleteResult = await cancelAdoption(animalId, req);
+  res.json(deleteResult);
+});
+
+
 
 // router.get('/', async function (req, res, next) {
 //   // const animals = await animalService.getAll();

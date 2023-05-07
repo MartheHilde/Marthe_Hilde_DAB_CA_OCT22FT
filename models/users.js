@@ -5,5 +5,9 @@ module.exports = (sequelize, Sequelize) => {
       password: Sequelize.DataTypes.STRING,
       roles: Sequelize.DataTypes.STRING 
     });
+
+    User.associate = function(models) {
+    User.hasMany(models.Adoptions);
+    }
     return User
 }

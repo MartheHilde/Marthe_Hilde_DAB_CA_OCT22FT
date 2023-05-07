@@ -1,29 +1,91 @@
-const { Species } = require('../../models');
-const { Temperament } = require('../../models');
+const { Species, Temperament, Animals } = require('../../models');
 
 
 /*
-  ADPOTING ANIMALS
+  ADOPTING ANIMALS
 */
-async function adoptAnimal(id){
-}
+async function adoptAnimal(id, req) {
+  console.log("Adopting animal...")
+  const currentUser = req.session.userId;
+  const role = req.user.roles;
 
-/*
-  DELETING ANIMALS
-*/
-async function deleteAnimal(id){
   try {
-    const deletedRows = await Animal.destroy({
-      where: { id: id }
-    });
-    if (deletedRows === 0) {
-      throw new Error('Animal does not exist');
+    if (role !== "member") {
+      return { success: false, message: "Only members can adopt animals." };
     }
+
+    // Check if the user has already adopted the animal:)
+    const adoption = await Adoptions.findOne({
+      where: {
+        UserId: currentUser,
+        AnimalId: id
+      }
+    });
+
+    if (adoption) {
+      // The user has already adopted the animal
+      return { success: false, message: "You have already adopted this animal." };
+    }
+
+    // Create a new adoption record
+    const newAdoption = await Adoptions.create({
+      UserId: currentUser,
+      AnimalId: id,
+      adoptionDate: new Date()
+    });
+
+    // Mark the animal as adopted
+    const animal = await Animals.findOne({ where: { id: id } });
+    animal.Adopted = true;
+    await animal.save();
+
+    return { success: true, message: "Adoption successful!" };
   } catch (error) {
-    console.log(error);
-    throw new Error('Failed to delete animal');
+    console.error(error);
+    return { success: false, message: "Internal server error." };
   }
 }
+
+
+
+/*
+  CANCEL ADOPTION
+*/
+async function cancelAdoption(id, req) {
+  const currentUser = req.session.userId;
+  const role = req.user.roles;
+
+  try {
+    if (role !== "admin") {
+      return { success: false, message: "Only admins can cancel animal adoptions." };
+    }
+
+    // Find the adoption record to be cancelled
+    const adoption = await Adoptions.findOne({
+      where: { AnimalId: id },
+      include: [{ model: Users, where: { id: currentUser } }]
+    });
+
+    if (!adoption) {
+      return { success: false, message: "No adoption found for this animal and user." };
+    }
+
+    // Update the adoption record to set adoptionDate to null
+    adoption.adoptionDate = null;
+    await adoption.save();
+
+    // Mark the animal as not adopted
+    const animal = await Animals.findOne({ where: { id: id } });
+    animal.Adopted = false;
+    await animal.save();
+
+    return { success: true, message: "Adoption cancelled successfully." };
+  } catch (error) {
+    console.error(error);
+    return { success: false, message: "Internal server error." };
+  }
+}
+
 
 /* 
   UPDATE SPECIES
@@ -157,7 +219,8 @@ function deleteTemperament(temperamentId) {
 
 
 module.exports = {
-  deleteAnimal,
+  adoptAnimal,
+  cancelAdoption,
   updateSpecies,
   addSpecies,
   deleteSpecies,
