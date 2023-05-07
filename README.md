@@ -19,13 +19,13 @@
     - "sequelize": "^6.28.0"
 
 # Environment Variables
-ADMIN_USERNAME = "YOUR_USERNAME"
-ADMIN_PASSWORD = "YOUR_PASSWORD"
-DATABASE_NAME = "YOUR_DATABASE"
-DIALECT = "mysql"
-DIALECTMODEL = "mysql2"
-PORT = "YOUR_PORT"
-HOST = "YOUR_HOST"
+- ADMIN_USERNAME = "YOUR_USERNAME"
+- ADMIN_PASSWORD = "YOUR_PASSWORD"
+- DATABASE_NAME = "YOUR_DATABASE"
+- DIALECT = "mysql"
+- DIALECTMODEL = "mysql2"
+- PORT = "YOUR_PORT"
+- HOST = "YOUR_HOST"
 # Additional Libraries/Packages
 ## Docker
 The Docker Compose file is designed to quickly set up a MySQL database container using the latest official MySQL Docker Hub image. It includes a named volume for persistent storage of the database files and sets up the root password for the MySQL server.
@@ -143,18 +143,41 @@ EXEC sp_addrolemember 'db_owner', 'dabcaowner';
     ORDER BY COUNT(*) DESC
     LIMIT 1;
    ```
-2. Query 2
+2. Query for returning a list of adopted animals, and name of the user that adopted them:
+    ```
+    SELECT Animals.Name AS AnimalName, Users.fullName AS UserName
+    FROM Animals
+    INNER JOIN Adoptions ON Animals.id = Adoptions.AnimalId
+    INNER JOIN Users ON Adoptions.UserId = Users.id
+    WHERE Animals.Adopted = true;
+    ```
 3. Query for returning all animals sorted by age from youngest to oldest:
    ```
    SELECT Name, Birthday, TIMESTAMPDIFF(YEAR, Birthday, CURDATE()) AS age_in_years
     FROM Animals
     ORDER BY Birthday ASC;
     ```
-1. Query for returning all animals born between 2017-12-31 and 2020-12-31:
+4. Query for returning all animals born between 2017-12-31 and 2020-12-31:
    ```
     SELECT Name, Birthday
     FROM Animals
     WHERE Birthday BETWEEN '2017-12-31' AND '2020-12-31';
     ``` 
-2. Qurey 5
-3. Query 6
+5. Query for returning the number of animals per size with each size and the number:
+   ```
+    SELECT Size.Size, COUNT(Animals.id) AS num_animals
+    FROM Animals
+    INNER JOIN Size ON Animals.SizeId = Size.id
+    GROUP BY Size.id;
+    ```
+6. Query for a trigger, where whenever a new animal of Species type "Lizzard" is added to the database, the last created user will automatically adopt the animal:
+    ```
+    CREATE TRIGGER new_lizard_adopter
+    AFTER INSERT ON Animals
+    FOR EACH ROW
+    BEGIN
+    IF NEW.species_id = (SELECT id FROM Species WHERE name = 'Lizard') THEN
+    UPDATE Animals SET adopted = true, created_by = (SELECT id FROM Users ORDER BY id DESC LIMIT 1) WHERE id = NEW.id;
+    END IF;
+    END;
+    ``` 

@@ -1,90 +1,43 @@
 const { Species, Temperament, Animals } = require('../../models');
 
-
 /*
   ADOPTING ANIMALS
 */
-async function adoptAnimal(id, req) {
-  console.log("Adopting animal...")
-  const currentUser = req.session.userId;
-  const role = req.user.roles;
-
-  try {
-    if (role !== "member") {
-      return { success: false, message: "Only members can adopt animals." };
-    }
-
-    // Check if the user has already adopted the animal:)
-    const adoption = await Adoptions.findOne({
-      where: {
-        UserId: currentUser,
-        AnimalId: id
-      }
+function adoptAnimal(animalId) {
+  fetch(`/animals/adopt/${animalId}`, { method: 'POST' })
+    .then(response => response.json())
+    .then(data => {
+      console.log(data.message);
+      window.location.reload();
+    })
+    .catch(error => {
+      console.error(error);
+      console.log("Could not adopt this animal")
     });
-
-    if (adoption) {
-      // The user has already adopted the animal
-      return { success: false, message: "You have already adopted this animal." };
-    }
-
-    // Create a new adoption record
-    const newAdoption = await Adoptions.create({
-      UserId: currentUser,
-      AnimalId: id,
-      adoptionDate: new Date()
-    });
-
-    // Mark the animal as adopted
-    const animal = await Animals.findOne({ where: { id: id } });
-    animal.Adopted = true;
-    await animal.save();
-
-    return { success: true, message: "Adoption successful!" };
-  } catch (error) {
-    console.error(error);
-    return { success: false, message: "Internal server error." };
-  }
 }
-
 
 
 /*
   CANCEL ADOPTION
 */
-async function cancelAdoption(id, req) {
-  const currentUser = req.session.userId;
-  const role = req.user.roles;
-
-  try {
-    if (role !== "admin") {
-      return { success: false, message: "Only admins can cancel animal adoptions." };
+function cancelAdoption(animalId) {
+  fetch(`/animals/cancelAdoption/${animalId}`, {
+    method: 'POST'
+  })
+  .then(response => {
+    if (response.status === 200) {
+      alert('Adoption cancelled successfully');
+      window.location.reload();
+    } else {
+      alert('Failed to cancel adoption');
     }
-
-    // Find the adoption record to be cancelled
-    const adoption = await Adoptions.findOne({
-      where: { AnimalId: id },
-      include: [{ model: Users, where: { id: currentUser } }]
-    });
-
-    if (!adoption) {
-      return { success: false, message: "No adoption found for this animal and user." };
-    }
-
-    // Update the adoption record to set adoptionDate to null
-    adoption.adoptionDate = null;
-    await adoption.save();
-
-    // Mark the animal as not adopted
-    const animal = await Animals.findOne({ where: { id: id } });
-    animal.Adopted = false;
-    await animal.save();
-
-    return { success: true, message: "Adoption cancelled successfully." };
-  } catch (error) {
-    console.error(error);
-    return { success: false, message: "Internal server error." };
-  }
+  })
+  .catch(error => {
+    console.log(error);
+    alert('An error occurred');
+  });
 }
+
 
 
 /* 
@@ -106,7 +59,7 @@ async function updateSpecies(id){
       throw new Error('Failed to update species');
     }
     console.log("DEBUG: after await")
-    window.location.reload(); // Reload the page after successful update
+    window.location.reload(); 
   } catch (error) {
     console.log(error);
     throw new Error('Failed to update species');
@@ -188,7 +141,7 @@ async function updateTemperament(id) {
       throw new Error('Failed to update temperament');
     }
     console.log('DEBUG: after await');
-    window.location.reload(); // Reload the page after successful update
+    window.location.reload(); 
   } catch (error) {
     console.log(error);
     throw new Error('Failed to update temperament');
@@ -210,7 +163,7 @@ function deleteTemperament(temperamentId) {
     method: 'DELETE'
   })
     .then(() => {
-      location.reload(); // Reload the page after successful delete
+      location.reload(); 
     })
     .catch(error => {
       console.error('Error:', error);

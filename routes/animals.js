@@ -2,6 +2,7 @@ var express = require('express');
 var router = express.Router();
 const { Animals, Species, Size, Temperament, Adoptions, Users } = require("../models");
 const { adoptAnimal, cancelAdoption } = require('../public/js/common');
+const db = require('../models');
 
 
 
@@ -34,152 +35,60 @@ router.get('/', async function (req, res, next) {
 });
 
 // ADOPT AN ANIMAL
-router.post("/:id/adopt", async (req, res) => {
-  const role = req.user.roles;
-  if (role !== "member") {
-    return res.json({ success: false, message: "Only members can adopt animals." });
+router.post('/adopt/:id', async (req, res) => {
+  try {
+    const animalId = req.params.id;
+    const userId = req.user.id; 
+    const animal = await Animals.findByPk(animalId);
+    if (animal.Adopted) {
+      return res.status(400).send({ error: 'Animal already adopted.' });
+    }
+    
+    const adoption = await Adoptions.create({ adoptionDate: new Date() });
+    await adoption.setUser(userId);
+    await adoption.setAnimal(animalId);
+    
+    animal.Adopted = true;
+    await animal.save();
+    
+    res.status(201).send({ message: 'Animal adopted successfully!' });
+  } catch (error) {
+    console.error(error);
+    res.status(500).send({ error: 'Error adopting animal.' });
   }
-
-  const animalId = req.params.id;
-  const adoptionResult = await adoptAnimal(animalId, req);
-  res.json(adoptionResult);
 });
 
+module.exports = router;
 
 
 // CANCEL ADOPTION
-router.post("/:id/cancel", async (req, res) => {
+router.post('/cancelAdoption/:id', async (req, res) => {
   const animalId = req.params.id;
-  const deleteResult = await cancelAdoption(animalId, req);
-  res.json(deleteResult);
+
+  try {
+    const adoption = await Adoptions.findOne({
+      where: { AnimalId: animalId }
+    });
+
+    if (!adoption) {
+      return res.status(404).json({ message: 'Adoption not found' });
+    }
+
+    await Adoptions.destroy({
+      where: { AnimalId: animalId }
+    });
+
+    await Animals.update(
+      { Adopted: false },
+      { where: { id: animalId } }
+    );
+
+    return res.status(200).json({ message: 'Adoption cancelled successfully' });
+  } catch (error) {
+    console.log(error);
+    return res.status(500).json({ message: 'Internal server error' });
+  }
 });
-
-
-
-// router.get('/', async function (req, res, next) {
-//   // const animals = await animalService.getAll();
-//   let animals =  [
-//     {
-//       "Id": 1,
-//       "Name": "Coco",
-//       "Species": "Dwarf Hamster",
-//       "Birthday": "2020-02-12",
-//       "Temperament": "calm, scared",
-//       "Size": "small",
-//       "Adopted": false
-//     },
-//     {
-//       "Id": 2,
-//       "Name": "Ted",
-//       "Species": "Tedy bear hamster",
-//       "Birthday": "2021-02-12",
-//       "Temperament": "calm, scared",
-//       "Size": "small",
-//       "Adopted": false
-//     },
-//     {
-//       "Id": 3,
-//       "Name": "Coco",
-//       "Species": "Jack-Russel",
-//       "Birthday": "2020-02-12",
-//       "Temperament": "energetic",
-//       "Size": "medium",
-//       "Adopted": false
-//     },
-//     {
-//       "Id": 4,
-//       "Name": "Everrest",
-//       "Species": "Budgy",
-//       "Birthday": "2019-02-12",
-//       "Temperament": "calm, happy",
-//       "Size": "small",
-//       "Adopted": false
-//     },
-//     {
-//       "Id": 5,
-//       "Name": "Rocko",
-//       "Species": "Tortouse",
-//       "Birthday": "2020-02-12",
-//       "Temperament": "calm, lazy",
-//       "Size": "medium",
-//       "Adopted": false
-//     },
-//     {
-//       "Id": 6,
-//       "Name": "Goldy",
-//       "Species": "Gold Fish",
-//       "Birthday": "2023-02-12",
-//       "Temperament": "calm",
-//       "Size": "small",
-//       "Adopted": false
-//     },
-//     {
-//       "Id": 7,
-//       "Name": "Lizzy",
-//       "Species": "Lizzard",
-//       "Birthday": "2020-02-12",
-//       "Temperament": "calm,lazy",
-//       "Size": "medium",
-//       "Adopted": false
-//     },
-//     {
-//       "Id": 8,
-//       "Name": "Goga",
-//       "Species": "Bearder Dragon",
-//       "Birthday": "2018-02-12",
-//       "Temperament": "calm, lazy, scared",
-//       "Size": "large",
-//       "Adopted": true
-//     },
-//     {
-//       "Id": 9,
-//       "Name": "Tweet Tweet",
-//       "Species": "Parrot",
-//       "Birthday": "2020-02-12",
-//       "Temperament": "calm, happy",
-//       "Size": "large",
-//       "Adopted": false
-//     },
-//     {
-//       "Id": 10,
-//       "Name": "Toothless",
-//       "Species": "Corn snake ",
-//       "Birthday": "2017-02-12",
-//       "Temperament": "scared",
-//       "Size": "medium",
-//       "Adopted": false
-//     },
-//     {
-//       "Id": 11,
-//       "Name": "Sophie",
-//       "Species": "Dwarf Hamster",
-//       "Birthday": "2020-02-12",
-//       "Temperament": "calm, scared",
-//       "Size": "small",
-//       "Adopted": false
-//     },
-//     {
-//       "Id": 12,
-//       "Name": "Teddy",
-//       "Species": "Teddy bear hamster",
-//       "Birthday": "2021-02-12",
-//       "Temperament": "calm, scared",
-//       "Size": "small",
-//       "Adopted": false
-//     },
-//     {
-//       "Id": 13,
-//       "Name": "Roger",
-//       "Species": "Parrot",
-//       "Birthday": "2020-02-18",
-//       "Temperament": "calm, happy",
-//       "Size": "large",
-//       "Adopted": false
-//     }
-//    ]
-
-//   res.render('animals', { user: null, animals: animals });
-// });
 
 module.exports = router;
 

@@ -15,6 +15,8 @@ router.get('/', async function (req, res, next) {
     }
   });
 
+//UPDATE TEMPERAMENT
+
 router.put('/:id', async function (req, res) {
   try {
     const id = req.params.id;
@@ -31,6 +33,8 @@ router.put('/:id', async function (req, res) {
     res.status(500).send('Internal server error');
   }
 });
+
+// ADD TEMPERAMENT
 
 router.post('/add', async function (req, res) {
   console.log("Connecting post request");
